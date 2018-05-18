@@ -1,126 +1,147 @@
-set vb
-set tags=/vobs/fw/tags
-set bg=dark
-set tagstack
-set autowrite
-ab #d #define
-ab #i #include
-ab #b /************************************************
-ab #e ************************************************/
-ab #l /*----------------------------------------------*/
-set ts=8
-set sw=4
-set softtabstop=4
-set expandtab
+set nocompatible              " required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+"
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+"
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" add all your plugins here (note older versions of Vundle
+" used Bundle instead of Plugin)
+
+" ...
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+"use case insensitive search, except when using capital letters
+set ignorecase
+set smartcase
+
+"Allow backspacing over autoindent, line breaks and start of insert action
+set backspace=indent,eol,start
+
+"Syntax highlighting
+"set t_Co=256
+"syntax on
+
+"Auto indent
 set autoindent
-set noai
-"set pastetoggle=<F11>
+
+" Enable folding
+set foldmethod=indent
+set foldlevel=99
+" Enable folding with the spacebar
+nnoremap <space> za
+
+"Display the cursor position
+"set ruler
+
+"enable use of the mouse for all modes
+set mouse=a
+
+"display line numbers
 set number
-set ic
-set backspace=2
-set autoindent
-set scrolljump=5
-set scrolloff=3
 
-"Always show the current position
-set ruler
+"This shows what you are typing as a command.
+"set showcmd
 
-" Show matching brackets
+"syntax  highlighting
+filetype on
+filetype plugin on
+syntax enable
+
+"Spaces are always better than tabs
+set expandtab
+set smarttab
+
+"and ofcourse 1 tab == 4 spaces
+set shiftwidth=4
+set tabstop=4
+
+"incremental search
+set incsearch
+
+"Always highlight search results. Not useful if you are color blind
+set hlsearch
+
+"showmatching brackets
 set showmatch
 
-colorscheme desert
-set nopaste
-
-" Set to autoread when a file is changed from the outside
-set autoread
-
-" Dont redraw when running macros. Good for performance
-set lazyredraw
-
-" for regular expressions turn magic on. Who doesnt like magic
-set magic
-
-" Turn backup off. No more annoying swap files.
+"Turn backup off. And how annoying is the .swp file
 set nobackup
 set nowb
 set noswapfile
 
-""""""""""""""""""""""""""""""
-" => Visual mode related
-""""""""""""""""""""""""""""""
-" Visual mode pressing * or # searches for the current selection
-" Super useful!
-vnoremap <silent> * :call VisualSelection('f')<CR>
-vnoremap <silent> # :call VisualSelection('b')<CR>
+"Checking out a new colorscheme
+Plugin 'jnurmine/Zenburn'
+Plugin 'altercation/vim-colors-solarized'
 
-"changing split window size with hot keys.
-nnoremap <C-LEFT> :vertical resize -5<cr>
-nnoremap <C-UP> :resize +5<cr>
-nnoremap <C-DOWN>   :resize -5<cr>
-nnoremap <C-RIGHT> :vertical resize +5<cr>
-
-"shift + insert for gui
-if has("gui_running")
-    map  <silent>  <S-Insert>  "+p
-    imap <silent>  <S-Insert>  <Esc>"+pa
-endif
-
-map <S-insert> <MiddleMouse>
-map! <S-insert> <MiddleMouse>
-
-set guifont=Monospace\ 12
-
-"how the hell do I start gvim in fullscreen
-"set lines=50 columns=100
-if has("gui_running")
-  " GUI is running or is about to start.
-  " Maximize gvim window (for an alternative on Windows, see simalt below).
-  " This Maximises the window to both the screens in a shared desktop so
-  " commenting for now.
-  " set lines=999 columns=999
-endif
-
-"was trying out a method to change font with hotkeys.. Does NOT work. Need to
-"check
-let s:pattern = '^\(.* \)\([1-9][0-9]*\)$'
-let s:minfontsize = 6
-let s:maxfontsize = 16
-function! AdjustFontSize(amount)
-if has("gui_gtk2") && has("gui_running")
-    let fontname = substitute(&guifont, s:pattern, '\1', '')
-    let cursize = substitute(&guifont, s:pattern, '\2', '')
-    let newsize = cursize + a:amount
-    if (newsize >= s:minfontsize) && (newsize <= s:maxfontsize)
-        let newfont = fontname . newsize
-        let &guifont = newfont
-    endif
+if has('gui_running')
+    set background=dark
+    colorscheme solarized
 else
-    echoerr "You need to run the GTK2 version of Vim to use this function."
+    colorscheme zenburn
 endif
-endfunction
-function! LargerFont()
-call AdjustFontSize(1)
-endfunction
-command! LargerFont call LargerFont()
 
-function! SmallerFont()
-call AdjustFontSize(-1)
-endfunction
-command! SmallerFont call SmallerFont()
-"End of font change method
-"The above method does not work. But still keeping it and hoping for some
-"magic in future
 
-"Folding based on syntax. Fold level 1.
-set foldmethod=syntax
-set foldlevelstart=1
+"File Browsing
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
 
-"Bundle 'majutsushi/tagbar'
+let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
+
+"Git Integration 
+Plugin 'tpope/vim-fugitive'
+"Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 
 set t_Co=256
+"let g:Powerline_symbols = "fancy"
 
-execute pathogen#infect()
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 
-"syntax enable
-"set background=dark
-"colorscheme solarized
+let g:airline_powerline_fonts = 1
+"let g:airline_theme='solarized'
+"let g:airline_theme='papercolor'
+let g:airline_theme='cobalt2'
+"let g:airline_theme='qwq'
+
+
+" Syntax checking 
+Plugin 'vim-syntastic/syntastic'
+" PEP8
+"Plugin 'nvie/vim-flake8'
+
+
+let python_highlight_all=1
+syntax on
+
+"Configs for syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:syntastic_quiet_messages = {
+    \ "regex":   'missing-docstring' }
+
+"let g:syntastic_python_checker_args='--ignore=C0'
+let g:syntastic_python_pylint_args='--ignore=C0111'
+"let g:syntastic_python_flake8_args='--ignore=C0111'
+"let g:syntastic_python_pep8_args='--ignore=C0111'
+"let g:syntastic_python_pycodestyle_args='--ignore=C0111'
+"let g:syntastic_python_pyflakes_args='--ignore=C0111'
+" Auto Complete plugin
+"Bundle 'Valloric/YouCompleteMe'
+
